@@ -75,6 +75,7 @@
 | `qbx_exports.lua` | `exports.qbx_core:*` بصنف `QbxCoreExports` |
 | `esx.lua` | `ESX.*` وأصناف `xPlayer` و `ESXJob` وغيرها |
 | `cfx_manifest.lua` | توجيهات `fxmanifest.lua` — **مكتوب يدويًا**، يُحمَّل دائمًا |
+| `sides.json` | خريطة الدوال إلى جهتها، يقرؤها `sides.js` |
 
 <div dir="rtl" align="right">
 

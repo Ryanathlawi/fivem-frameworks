@@ -1,7 +1,7 @@
 {
   "name": "fivem-frameworks",
   "displayName": "FiveM Frameworks IntelliSense",
-  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox, ESX, ox_lib, ox_inventory and the qb-* resources. Ships with FiveM natives.",
+  "description": "Autocomplete, hover docs, formatting and client/server checking for QBCore, Qbox, ESX, ox_lib, ox_inventory and the qb-* resources. Ships with FiveM natives.",
   "version": "0.1.0",
   "publisher": "Ryanathlawi",
   "author": {
@@ -82,6 +82,11 @@
             ]
           },
           "markdownDescription": "Which definitions to load. `auto` looks for each resource folder in the workspace and falls back to loading all of them."
+        },
+        "fivemFrameworks.checkSide": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Warn when a server-only function is called from a client file, or the reverse. The file's side comes from the resource`s `fxmanifest.lua`, falling back to folder and file naming."
         }
       }
     },
@@ -102,7 +107,7 @@
   },
   "scripts": {
     "generate": "node tools/generate.js",
-    "test": "node tools/check.js",
+    "test": "node tools/check.js && node tools/test-sides.js",
     "package": "vsce package",
     "publish": "vsce publish"
   },

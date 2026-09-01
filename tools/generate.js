@@ -320,9 +320,23 @@ function qbPlayerAlias (h) {
   return n ? out.join('\n') : ''
 }
 
+// Which side a call belongs to, for names written literally in code
+// (`ESX.GetPlayerFromId`, not `xPlayer.setJob` reached through a variable).
+// The language server has no notion of client vs server; the extension uses
+// this map to say so itself.
+function collectSides (h, into) {
+  for (const [full, d] of h.funcs) {
+    if (d.localScope) continue
+    if (d.side !== 'server' && d.side !== 'client') continue
+    if (into[full] && into[full] !== d.side) into[full] = 'shared' // defined on both
+    else into[full] = d.side
+  }
+}
+
 function main () {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'fwdefs-'))
   fs.mkdirSync(OUT, { recursive: true })
+  const sides = {}
   for (const fw of FRAMEWORKS) {
     process.stdout.write('\n== ' + fw.title + ' (' + fw.repo + '@' + fw.branch + ')\n')
     const h = harvest(download(fw, tmp))
@@ -342,8 +356,14 @@ function main () {
         exported = (text.match(/^function res:/gm) || []).length
       }
     }
+    collectSides(h, sides)
     console.log('   ' + h.funcs.size + ' functions, ' + h.classes.length + ' classes, ' + exported + ' exports')
   }
+
+  for (const k of Object.keys(sides)) if (sides[k] === 'shared') delete sides[k]
+  fs.writeFileSync(path.join(OUT, 'sides.json'), JSON.stringify(sides, null, 0), 'utf8')
+  console.log('\n   ' + Object.keys(sides).length + ' side-specific calls -> sides.json')
+
   fs.rmSync(tmp, { recursive: true, force: true })
 }
 

@@ -81,6 +81,8 @@ async function apply (ctx, announce) {
 }
 
 function activate (ctx) {
+  require('./sides').activate(ctx, path.join(ctx.extensionPath, 'library'))
+
   ctx.subscriptions.push(
     vscode.commands.registerCommand('fivemFrameworks.reload', () => apply(ctx, true)),
     vscode.workspace.onDidChangeConfiguration(e => {
