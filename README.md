@@ -6,7 +6,9 @@
 تكتب يطلع لك الاقتراح والشرح والباراميترات — بدون ما تفتح الدوكيومنتيشن ولا
 تروح تدوّر في `qb-core` وش اسم الدالة بالضبط.
 
-يدعم ثلاث فريمويركات: **QBCore** و **Qbox (qbx_core)** و **ESX**.
+يدعم ثلاث فريمويركات — **QBCore** و **Qbox (qbx_core)** و **ESX** — وخمسة
+موارد تستخدمها كل يوم: **ox_lib** و **ox_inventory** و **qb-target** و
+**qb-menu** و **qb-inventory**. وتجي معه دوال فايف ام الأصلية (natives).
 
 </div>
 
@@ -23,7 +25,7 @@
 | **تنسيق الكود** | `Shift+Alt+F` ينسّق ملف اللوا كامل |
 | **سيرفر ولا كلاينت** | كل دالة مكتوب فوقها `[server]` أو `[client]` عشان ما تناديها بالغلط |
 
-عدد الدوال المغطّاة الحين: **أكثر من ٧٣٠ دالة** موزّعة على الفريمويركات الثلاثة.
+عدد الدوال المغطّاة الحين: **‏١١٠٢ دالة** و **‏٢٠٣ صنف** — بدون احتساب الـ natives.
 
 </div>
 
@@ -56,7 +58,7 @@ Player.Functions.       -- ← يعرف نوعه ويكمّل لك دواله
 
 <div dir="rtl" align="right">
 
-### Qbox — ‏١٦٤ دالة و ‏١٠٠ تصدير و ‏٤٦ صنف
+### Qbox — ‏١٣٦ دالة و ‏٤٦ صنف
 
 </div>
 
@@ -78,7 +80,7 @@ exports.qbx_core:Notify('تم', 'succes')  -- ← ينبّهك: 'success' مو '
 
 <div dir="rtl" align="right">
 
-### ESX — ‏٤٢٣ دالة و ‏٣٨ صنف
+### ESX — ‏٣٤٣ دالة و ‏٣٨ صنف
 
 </div>
 
@@ -101,6 +103,37 @@ xPlayer.setJob('police', 2)   -- ← ينبّهك: الرتبة string مو رق
 ```
 
 <div dir="rtl" align="right">
+
+### الموارد
+
+مو بس الفريمويركات — الموارد اللي تقعد فيها أكثر من الفريمويرك نفسه:
+
+</div>
+
+| المورد | التغطية | تكتب |
+|---|---|---|
+| **ox_lib** | ‏٢٥٧ دالة · ‏٨٧ صنف | `lib.` |
+| **ox_inventory** | ‏٩٩ دالة · ‏١١ صنف | `exports.ox_inventory:` |
+| **qb-target** | ‏٥٦ تصدير | `exports['qb-target']:` |
+| **qb-inventory** | ‏٣٢ تصدير | `exports['qb-inventory']:` |
+| **qb-menu** | ‏٣ تصديرات | `exports['qb-menu']:` |
+
+<div dir="rtl" align="right">
+
+`ox_lib` أغنى واحد فيهم من ناحية التوثيق — أغنى حتى من الفريمويركات:
+
+</div>
+
+```lua
+lib.notify({ title = 'تم', type = 'success' })
+lib.callback.await('my:callback', false)
+lib.inputDialog('العنوان', { 'الحقل' })
+```
+
+<div dir="rtl" align="right">
+
+> **ox_target غير مدعوم** — يسجّل تصديراته داخل حلقة (`exports(index, value)`)
+> فأسماؤها ما تنوجد إلا وقت التشغيل، ولا يمكن استخراجها من الكود.
 
 </div>
 
@@ -132,11 +165,19 @@ FiveM Frameworks IntelliSense
 
 يشوف الموارد الموجودة في المجلد المفتوح:
 
-| لو لقى | يحمّل تعريفات |
+| لو لقى مجلد | يحمّل تعريفات |
 |---|---|
 | `qb-core` | QBCore |
 | `qbx_core` | Qbox |
 | `es_extended` | ESX |
+| `ox_lib` | ox_lib |
+| `ox_inventory` | ox_inventory |
+| `qb-target` | qb-target |
+| `qb-menu` | qb-menu |
+| `qb-inventory` | qb-inventory |
+
+كل واحد يُكتشف لحاله — يعني لو سيرفرك QBCore + ox_lib، تجيك تعريفات
+الاثنين بس، بدون ضجيج ESX ولا Qbox.
 
 ولو ما لقى ولا واحد، يحمّلها كلها عشان ما تقعد بلا إكمال.
 
@@ -146,8 +187,10 @@ FiveM Frameworks IntelliSense
 
 ```jsonc
 {
-  // "auto" أو أي مزيج من: "qbcore", "qbx", "esx"
-  "fivemFrameworks.frameworks": ["qbx"]
+  // "auto" أو أي مزيج من:
+  // "qbcore" · "qbx" · "esx" · "ox_lib" · "ox_inventory"
+  // "qb_target" · "qb_menu" · "qb_inventory"
+  "fivemFrameworks.frameworks": ["qbcore", "ox_lib"]
 }
 ```
 
@@ -170,11 +213,16 @@ FiveM: Reload framework definitions
 
 </div>
 
-| Framework | Source |
+| Resource | Source |
 |---|---|
 | QBCore | [`qbcore-fivem/qb-core`](https://github.com/qbcore-fivem/qb-core) |
 | Qbox | [`Qbox-project/qbx_core`](https://github.com/Qbox-project/qbx_core) |
 | ESX | [`esx-framework/esx_core`](https://github.com/esx-framework/esx_core) |
+| ox_lib | [`overextended/ox_lib`](https://github.com/overextended/ox_lib) |
+| ox_inventory | [`overextended/ox_inventory`](https://github.com/overextended/ox_inventory) |
+| qb-target | [`qbcore-fivem/qb-target`](https://github.com/qbcore-fivem/qb-target) |
+| qb-menu | [`qbcore-fivem/qb-menu`](https://github.com/qbcore-fivem/qb-menu) |
+| qb-inventory | [`qbcore-fivem/qb-inventory`](https://github.com/qbcore-fivem/qb-inventory) |
 
 <div dir="rtl" align="right">
 
@@ -248,23 +296,29 @@ VS Code إصدار `1.80` أو أحدث — وبس. الباقي يتركّب م
 
 ## In English
 
-A VS Code extension that bundles the APIs of the three major FiveM frameworks —
-**QBCore**, **Qbox (qbx_core)** and **ESX** — into one install.
+A VS Code extension that bundles the APIs of the three major FiveM frameworks
+and the resources you actually spend your day in — into one install.
 
-Over 730 functions with completion, hover documentation, signature help,
-go-to-definition and formatting. Every function is tagged `[server]` or
+1,102 functions and 203 classes with completion, hover documentation, signature
+help, go-to-definition and formatting. Every function is tagged `[server]` or
 `[client]` so you never call one on the wrong side.
 
-| Framework | Coverage |
+| | Coverage |
 |---|---|
 | **QBCore** | 144 functions — `QBCore.Functions.*`, `QBCore.Player.*`, `QBCore.Shared.*`, and player methods typed through `GetPlayer` |
-| **Qbox** | 164 functions, 100 exports, 46 classes — `exports.qbx_core:*` and the `qbx.*` utility library |
-| **ESX** | 423 functions, 38 classes — `ESX.*`, `xPlayer.*`, `ESX.Game.*`, `ESX.UI.*` |
+| **Qbox** | 136 functions, 46 classes — `exports.qbx_core:*` and the `qbx.*` utility library |
+| **ESX** | 343 functions, 38 classes — `ESX.*`, `xPlayer.*`, `ESX.Game.*`, `ESX.UI.*` |
+| **ox_lib** | 257 functions, 87 classes — the whole `lib.*` surface |
+| **ox_inventory** | 99 functions, 11 classes — `exports.ox_inventory:*` |
+| **qb-target** · **qb-inventory** · **qb-menu** | 91 exports |
 
-Definitions are generated straight from each framework's official repository
-rather than written by hand, so a framework update is one command away
-(`node tools/generate.js`). Open any folder containing an `fxmanifest.lua`
-and the matching framework is detected and loaded automatically.
+Definitions are generated straight from each project's official repository
+rather than written by hand, so an upstream update is one command away
+(`node tools/generate.js`). Open any folder containing an `fxmanifest.lua` and
+whatever it contains is detected and loaded — nothing else.
+
+`ox_target` is not covered: it registers its exports in a loop, so the names
+exist only at runtime and cannot be read out of the source.
 
 One install covers frameworks, natives and formatting. Completion and
 formatting come from the

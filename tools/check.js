@@ -14,7 +14,12 @@ const LIB = path.join(ROOT, 'library')
 // Floors, not exact counts -- upstream adds functions all the time. These track
 // the PUBLIC surface: functions hanging off a table the framework keeps local
 // are filtered out, so most of Qbox lands in qbx_exports.lua rather than qbx.lua.
-const MIN = { 'qbcore.lua': 100, 'qbx.lua': 35, 'qbx_exports.lua': 50, 'esx.lua': 250 }
+const MIN = {
+  'qbcore.lua': 100, 'qbx.lua': 35, 'qbx_exports.lua': 60, 'esx.lua': 250,
+  'ox_lib.lua': 200, 'ox_inventory.lua': 20, 'ox_inventory_exports.lua': 25,
+  'qb_target_exports.lua': 40, 'qb_menu_exports.lua': 3, 'qb_inventory_exports.lua': 25,
+  'cfx_manifest.lua': 25,
+}
 
 for (const [file, min] of Object.entries(MIN)) {
   const full = path.join(LIB, file)

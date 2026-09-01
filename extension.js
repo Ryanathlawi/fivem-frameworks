@@ -6,17 +6,27 @@
 const path = require('node:path')
 const vscode = require('vscode')
 
-// A framework is "present" when its own resource is in the workspace.
+// A framework or resource is "present" when its own folder is in the workspace.
 const DETECT = {
   qbcore: '**/qb-core/fxmanifest.lua',
   qbx: '**/qbx_core/fxmanifest.lua',
   esx: '**/es_extended/fxmanifest.lua',
+  ox_lib: '**/ox_lib/fxmanifest.lua',
+  ox_inventory: '**/ox_inventory/fxmanifest.lua',
+  qb_target: '**/qb-target/fxmanifest.lua',
+  qb_menu: '**/qb-menu/fxmanifest.lua',
+  qb_inventory: '**/qb-inventory/fxmanifest.lua',
 }
 
 const FILES = {
   qbcore: ['qbcore.lua'],
   qbx: ['qbx.lua', 'qbx_exports.lua'],
   esx: ['esx.lua'],
+  ox_lib: ['ox_lib.lua'],
+  ox_inventory: ['ox_inventory.lua', 'ox_inventory_exports.lua'],
+  qb_target: ['qb_target_exports.lua'],
+  qb_menu: ['qb_menu_exports.lua'],
+  qb_inventory: ['qb_inventory_exports.lua'],
 }
 
 const ALL = Object.keys(DETECT)

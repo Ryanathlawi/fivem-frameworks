@@ -731,7 +731,6 @@ function ESX.GetIdentifier(playerId) end
 ---[server]
 ---@param item string
 ---@return string?
----@diagnostic disable-next-line: duplicate-set-field
 function ESX.GetItemLabel(item) end
 
 ---[server]
@@ -782,7 +781,6 @@ function ESX.GetUsableItems() end
 ---@param player number
 ---@param cb function?
 ---@return string?
----@diagnostic disable-next-line: duplicate-set-field
 function ESX.GetVehicleType(model, player, cb) end
 
 ---[client]
@@ -832,7 +830,6 @@ function ESX.IsFunctionReference(val) end
 ---[server]
 ---@param source number
 ---@return boolean
----@diagnostic disable-next-line: duplicate-set-field
 function ESX.IsPlayerLoaded(source) end
 
 ---[shared]
@@ -1159,7 +1156,6 @@ function Menu:Change(data, menu) end
 function Menu:CheckModel(character) end
 
 ---[client]
----@diagnostic disable-next-line: duplicate-set-field
 function Menu:Close() end
 
 ---[client]
@@ -1329,7 +1325,6 @@ function SkinChanger:ValidClothes(key) end
 ---@param name string
 ---@param path string
 ---@return string?, string? -- filename, error message
----@diagnostic disable-next-line: duplicate-set-field
 function package.searchpath(name, path) end
 
 ---[shared]
@@ -1364,14 +1359,12 @@ function xLib.addKeybind(data) end
 ---@param event string
 ---@param delay? number | false prevent the event from being called for the given time.
 ---Sends an event to the server and halts the current thread until a response is returned.
----@diagnostic disable-next-line: duplicate-set-field
 function xLib.callback.await(event, delay, ...) end
 
 ---[shared]
 ---@param name string
 ---@param cb function
 ---Registers an event handler and callback function to respond to server requests.
----@diagnostic disable-next-line: duplicate-set-field
 function xLib.callback.register(name, cb) end
 
 ---[shared]

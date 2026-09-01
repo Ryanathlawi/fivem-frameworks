@@ -1,7 +1,7 @@
 {
   "name": "fivem-frameworks",
   "displayName": "FiveM Frameworks IntelliSense",
-  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox (qbx_core) and ESX. Ships with FiveM natives.",
+  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox, ESX, ox_lib, ox_inventory and the qb-* resources. Ships with FiveM natives.",
   "version": "0.1.0",
   "publisher": "Ryanathlawi",
   "author": {
@@ -29,6 +29,9 @@
     "qbcore",
     "qbox",
     "esx",
+    "ox_lib",
+    "ox_inventory",
+    "qb-target",
     "lua",
     "gta5",
     "roleplay"
@@ -59,16 +62,26 @@
               "auto",
               "qbcore",
               "qbx",
-              "esx"
+              "esx",
+              "ox_lib",
+              "ox_inventory",
+              "qb_target",
+              "qb_menu",
+              "qb_inventory"
             ],
             "enumDescriptions": [
               "Detect from the resources in this workspace",
               "QBCore (qb-core)",
               "Qbox (qbx_core)",
-              "ESX (es_extended)"
+              "ESX (es_extended)",
+              "ox_lib",
+              "ox_inventory",
+              "qb-target",
+              "qb-menu",
+              "qb-inventory"
             ]
           },
-          "markdownDescription": "Which framework definitions to load. `auto` looks for `qb-core`, `qbx_core` and `es_extended` in the workspace, and falls back to loading all of them."
+          "markdownDescription": "Which definitions to load. `auto` looks for each resource folder in the workspace and falls back to loading all of them."
         }
       }
     },

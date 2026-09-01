@@ -12,10 +12,19 @@ const path = require('node:path')
 const ROOT = path.join(__dirname, '..')
 const OUT = path.join(ROOT, 'library')
 
+// `exportsAs` is the resource name scripts reach it by: exports.ox_lib / exports['qb-target'].
 const FRAMEWORKS = [
   { id: 'qbcore', repo: 'qbcore-fivem/qb-core', branch: 'main', title: 'QBCore' },
-  { id: 'qbx', repo: 'Qbox-project/qbx_core', branch: 'main', title: 'Qbox (qbx_core)' },
+  { id: 'qbx', repo: 'Qbox-project/qbx_core', branch: 'main', title: 'Qbox (qbx_core)', exportsAs: 'qbx_core' },
   { id: 'esx', repo: 'esx-framework/esx_core', branch: 'main', title: 'ESX' },
+
+  { id: 'ox_lib', repo: 'overextended/ox_lib', branch: 'main', title: 'ox_lib', exportsAs: 'ox_lib' },
+  { id: 'ox_inventory', repo: 'overextended/ox_inventory', branch: 'main', title: 'ox_inventory', exportsAs: 'ox_inventory' },
+  // ox_target is deliberately absent: it registers exports in a loop
+  // (`exports(index, value)`), so the names exist only at runtime.
+  { id: 'qb_target', repo: 'qbcore-fivem/qb-target', branch: 'main', title: 'qb-target', exportsAs: 'qb-target' },
+  { id: 'qb_menu', repo: 'qbcore-fivem/qb-menu', branch: 'main', title: 'qb-menu', exportsAs: 'qb-menu' },
+  { id: 'qb_inventory', repo: 'qbcore-fivem/qb-inventory', branch: 'main', title: 'qb-inventory', exportsAs: 'qb-inventory' },
 ]
 
 // Directories that hold config/translations/vendored code, never public API.
@@ -24,7 +33,10 @@ const SKIP_DIR = /[\\/](locale|locales|cfg|config|node_modules|\.github|web|html
 const DEF_DOTTED = /^function\s+([A-Za-z_][\w.]*)([.:])([A-Za-z_]\w*)\s*\(([^)]*)\)/
 const DEF_ASSIGN = /^([A-Za-z_][\w.]*)\.([A-Za-z_]\w*)\s*=\s*function\s*\(([^)]*)\)/
 const DEF_GLOBAL = /^function\s+([A-Za-z_]\w*)\s*\(([^)]*)\)/
-const EXPORT_CALL = /^exports\(\s*["']([\w.]+)["']\s*,\s*([A-Za-z_]\w*)\s*\)/
+// The second argument can be dotted: `exports('Search', Inventory.Search)`.
+const EXPORT_REF = /^exports\(\s*["']([\w.]+)["']\s*,\s*([A-Za-z_][\w.]*)\s*\)/
+const EXPORT_FN = /^exports\(\s*["']([\w.]+)["']\s*,\s*function\s*\(([^)]*)\)/
+const LOCAL_FN = /^local\s+function\s+([A-Za-z_]\w*)\s*\(([^)]*)\)/
 const CLASS_START = /^---@(class|alias|enum)\s/
 const SIDE_TAG = /^---\s*@?(server|client)\s*$/i
 
@@ -62,7 +74,20 @@ function sideOf (p) {
 function docAbove (lines, i) {
   const doc = []
   for (let j = i - 1; j >= 0 && lines[j].trim().startsWith('---'); j--) doc.unshift(lines[j].trim())
-  return doc.filter(l => !SIDE_TAG.test(l))
+  // `---@diagnostic` directives steer the checker over the framework's own
+  // source; carried into a definition file they mean nothing.
+  return doc.filter(l => !SIDE_TAG.test(l) && !l.startsWith('---@diagnostic'))
+}
+
+const deprecated = (doc) => doc.some(l => l.startsWith('---@deprecated'))
+
+// Which of two definitions of the same name to keep. ox_lib keeps a deprecated
+// server-side `lib.notify(playerId, data)` beside the current client-side
+// `lib.notify(data)`, and the deprecated one carries more annotations -- so
+// "most documented" alone would ship the dead signature.
+function better (doc, prev) {
+  if (deprecated(prev) !== deprecated(doc)) return deprecated(prev)
+  return doc.length > prev.length
 }
 
 function cleanArgs (a) {
@@ -113,6 +138,14 @@ function harvest (srcDir) {
         continue
       }
 
+      // Recorded but never emitted as globals: `exports('openMenu', openMenu)`
+      // needs to find the local it points at.
+      const lf = line.match(LOCAL_FN)
+      if (lf) {
+        const key = side + ':' + lf[1]
+        if (!globals.has(key)) globals.set(key, { doc: docAbove(lines, i), args: cleanArgs(lf[2]), side })
+        continue
+      }
       if (line.startsWith('local function')) continue
 
       let m, prefix, sep, name, args
@@ -125,8 +158,13 @@ function harvest (srcDir) {
         const key = side + ':' + m[1]
         if (!globals.has(key)) globals.set(key, { doc: docAbove(lines, i), args: cleanArgs(m[2]), side })
         continue
-      } else if ((m = line.match(EXPORT_CALL))) {
+      } else if ((m = line.match(EXPORT_REF))) {
         exported.push({ exportName: m[1], fn: m[2], side })
+        continue
+      } else if ((m = line.match(EXPORT_FN))) {
+        // `exports('getCurrentWeapon', function() ... end)` -- defined inline,
+        // so the signature and docs come from the export site itself.
+        exported.push({ exportName: m[1], side, inline: { doc: docAbove(lines, i), args: cleanArgs(m[2]), side } })
         continue
       } else continue
 
@@ -134,7 +172,7 @@ function harvest (srcDir) {
       const full = prefix + sep + name
       const doc = docAbove(lines, i)
       const prev = funcs.get(full)
-      if (prev && prev.doc.length >= doc.length) continue
+      if (prev && !better(doc, prev.doc)) continue
       const localScope = locals.has(prefix.split(/[.:]/)[0])
       funcs.set(full, { prefix, sep, name, args: cleanArgs(args), doc, side, localScope })
     }
@@ -192,20 +230,28 @@ function render (fw, h, extra) {
   return [...banner, ...classBlocks, ...decls, ...names.sort().map(n => renderFn(h.funcs.get(n))), extra || ''].join('\n')
 }
 
-// Qbox is consumed as `exports.qbx_core:Fn()`, so its globals become a typed export class.
-function renderQbxExports (h) {
+// Most resources are consumed as `exports.name:Fn()`, so their globals become a
+// typed export class hung off the `exports` table.
+function renderExports (h, resource) {
+  const cls = resource.replace(/(^|[-_])(\w)/g, (_, __, c) => c.toUpperCase()) + 'Exports'
+  // `exports.ox_lib` works unquoted; `exports['qb-target']` needs the quoted key.
+  const field = /^\w+$/.test(resource) ? resource : "['" + resource + "']"
   const out = [
     '---@meta',
-    '-- Qbox exports (`exports.qbx_core:Fn()`), generated by tools/generate.js.',
+    '-- ' + resource + ' exports (`exports' + (/^\w+$/.test(resource) ? '.' + resource : field) + ':Fn()`),',
+    '-- generated by tools/generate.js.',
     '',
-    '---@class QbxCoreExports',
-    'local qbx_core = {}',
+    '---@class ' + cls,
+    'local res = {}',
     '',
   ]
   // One entry per export name; a name registered on both sides is labelled client/server.
   const byName = new Map()
   for (const e of h.exports) {
-    const g = h.globals.get(e.side + ':' + e.fn) || [...h.globals].find(([k]) => k.endsWith(':' + e.fn))?.[1]
+    const g = e.inline ||
+      h.globals.get(e.side + ':' + e.fn) ||
+      [...h.globals].find(([k]) => k.endsWith(':' + e.fn))?.[1] ||
+      h.funcs.get(e.fn) // dotted reference, e.g. `exports('Search', Inventory.Search)`
     if (!g) continue
     const prev = byName.get(e.exportName)
     if (!prev) { byName.set(e.exportName, { ...g, side: e.side }); continue }
@@ -213,10 +259,10 @@ function renderQbxExports (h) {
     if (g.doc.length > prev.doc.length) { prev.doc = g.doc; prev.args = g.args }
   }
   for (const [name, g] of byName) {
-    out.push('---[' + g.side + ']', ...g.doc, 'function qbx_core:' + name + '(' + g.args + ') end', '')
+    out.push('---[' + g.side + ']', ...g.doc, 'function res:' + name + '(' + g.args + ') end', '')
   }
-  out.push('---@class CfxExports', '---@field qbx_core QbxCoreExports', 'exports = exports or {}', '')
-  return out.join('\n')
+  out.push('---@class CfxExports', '---@field ' + field + ' ' + cls, 'exports = exports or {}', '')
+  return byName.size ? out.join('\n') : ''
 }
 
 // The line nearly every framework script opens with. Written as a `local`, it
@@ -282,9 +328,21 @@ function main () {
     const h = harvest(download(fw, tmp))
     if (fw.id === 'qbcore') typeQbPlayers(h)
     const extra = [fw.id === 'qbcore' ? qbPlayerAlias(h) : '', BOOTSTRAP[fw.id] || ''].filter(Boolean).join('\n')
-    fs.writeFileSync(path.join(OUT, fw.id + '.lua'), render(fw, h, extra), 'utf8')
-    if (fw.id === 'qbx') fs.writeFileSync(path.join(OUT, 'qbx_exports.lua'), renderQbxExports(h), 'utf8')
-    console.log('   ' + h.funcs.size + ' functions, ' + h.classes.length + ' classes, ' + h.exports.length + ' exports')
+    // A file with nothing in it is noise in the completion list, not coverage.
+    const body = render(fw, h, extra)
+    const defined = (body.match(/^function /gm) || []).length
+    if (defined) fs.writeFileSync(path.join(OUT, fw.id + '.lua'), body, 'utf8')
+    else fs.rmSync(path.join(OUT, fw.id + '.lua'), { force: true })
+
+    let exported = 0
+    if (fw.exportsAs) {
+      const text = renderExports(h, fw.exportsAs)
+      if (text) {
+        fs.writeFileSync(path.join(OUT, fw.id + '_exports.lua'), text, 'utf8')
+        exported = (text.match(/^function res:/gm) || []).length
+      }
+    }
+    console.log('   ' + h.funcs.size + ' functions, ' + h.classes.length + ' classes, ' + exported + ' exports')
   }
   fs.rmSync(tmp, { recursive: true, force: true })
 }
