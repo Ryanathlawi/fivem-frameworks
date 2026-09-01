@@ -645,3 +645,14 @@ function QBCorePlayer.Functions.AddMethod(methodName, handler) end
 
 ---[server]
 function QBCorePlayer.Functions.AddField(fieldName, data) end
+
+---@class QbCoreExports
+local qb_core = {}
+
+---Get the QBCore object. `local QBCore = exports['qb-core']:GetCoreObject()`
+---@return QBCore
+function qb_core:GetCoreObject() end
+
+---@class CfxExports
+---@field ['qb-core'] QbCoreExports
+exports = exports or {}

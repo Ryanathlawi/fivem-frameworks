@@ -171,6 +171,13 @@ function render (fw, h, extra) {
   for (const r of new Set(names.map(n => n.split(/[.:]/)[0]))) {
     if (!tables.includes(r)) tables.unshift(r)
   }
+  // Exact names, not prefixes: `---@class ESXAccount` starts with `---@class ESX`,
+  // which used to convince us `ESX` was already declared. It was not, so `ESX`
+  // ended up an untyped table and every ESX.* lookup came back undefined.
+  const declared = new Set(
+    h.classes.map(b => (b[0].match(/^---@class\s+([\w.]+)/) || [])[1]).filter(Boolean)
+  )
+
   const decls = []
   for (const t of tables) {
     // Frameworks add helpers to `string`, `math` and friends. Declaring those
@@ -179,7 +186,7 @@ function render (fw, h, extra) {
     if (LUA_STDLIB.has(t)) continue
     // Plain assignment, not `t or {}`: the union with `table` would make the type
     // open and silence undefined-field on typo'd calls.
-    if (!t.includes('.') && !h.classes.some(b => b[0].startsWith('---@class ' + t))) decls.push('---@class ' + t)
+    if (!t.includes('.') && !declared.has(t)) decls.push('---@class ' + t)
     decls.push(t + ' = {}', '')
   }
   return [...banner, ...classBlocks, ...decls, ...names.sort().map(n => renderFn(h.funcs.get(n))), extra || ''].join('\n')
@@ -212,6 +219,38 @@ function renderQbxExports (h) {
   return out.join('\n')
 }
 
+// The line nearly every framework script opens with. Written as a `local`, it
+// shadows the global we declare, so without a typed return here completion dies
+// at the very first dot -- in the exact file layout everybody actually uses.
+const BOOTSTRAP = {
+  qbcore: [
+    '---@class QbCoreExports',
+    'local qb_core = {}',
+    '',
+    '---Get the QBCore object. `local QBCore = exports[\'qb-core\']:GetCoreObject()`',
+    '---@return QBCore',
+    'function qb_core:GetCoreObject() end',
+    '',
+    '---@class CfxExports',
+    '---@field [\'qb-core\'] QbCoreExports',
+    'exports = exports or {}',
+    '',
+  ].join('\n'),
+  esx: [
+    '---@class EsExtendedExports',
+    'local es_extended = {}',
+    '',
+    '---Get the ESX object. `local ESX = exports[\'es_extended\']:getSharedObject()`',
+    '---@return ESX',
+    'function es_extended:getSharedObject() end',
+    '',
+    '---@class CfxExports',
+    '---@field [\'es_extended\'] EsExtendedExports',
+    'exports = exports or {}',
+    '',
+  ].join('\n'),
+}
+
 // Upstream QBCore annotates its player getters as `@return table`, which dead-ends
 // completion on `Player.Functions.*`. Point them at the class instead.
 const QB_GETTERS = /^(GetPlayer|GetPlayerByCitizenId|GetPlayerByLicense|GetPlayerByPhone|GetPlayerByAccount|GetPlayerByCharInfo|GetOfflinePlayer|GetOfflinePlayerByLicense|CreatePlayer|Login)$/
@@ -242,7 +281,7 @@ function main () {
     process.stdout.write('\n== ' + fw.title + ' (' + fw.repo + '@' + fw.branch + ')\n')
     const h = harvest(download(fw, tmp))
     if (fw.id === 'qbcore') typeQbPlayers(h)
-    const extra = fw.id === 'qbcore' ? qbPlayerAlias(h) : ''
+    const extra = [fw.id === 'qbcore' ? qbPlayerAlias(h) : '', BOOTSTRAP[fw.id] || ''].filter(Boolean).join('\n')
     fs.writeFileSync(path.join(OUT, fw.id + '.lua'), render(fw, h, extra), 'utf8')
     if (fw.id === 'qbx') fs.writeFileSync(path.join(OUT, 'qbx_exports.lua'), renderQbxExports(h), 'utf8')
     console.log('   ' + h.funcs.size + ' functions, ' + h.classes.length + ' classes, ' + h.exports.length + ' exports')

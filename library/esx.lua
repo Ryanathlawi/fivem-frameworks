@@ -322,6 +322,7 @@ Database = {}
 ---@class Death
 Death = {}
 
+---@class ESX
 ESX = {}
 
 ---@class Menu
@@ -2041,3 +2042,13 @@ function xLib.triggerMedalClip(publicKey, eventName, clipOptions) end
 ---@async
 function xLib.waitFor(cb, errMessage, timeout, interval) end
 
+---@class EsExtendedExports
+local es_extended = {}
+
+---Get the ESX object. `local ESX = exports['es_extended']:getSharedObject()`
+---@return ESX
+function es_extended:getSharedObject() end
+
+---@class CfxExports
+---@field ['es_extended'] EsExtendedExports
+exports = exports or {}
