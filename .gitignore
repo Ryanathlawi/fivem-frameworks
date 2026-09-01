@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# build output
+*.vsix
+
+# secrets — the Marketplace token must never be committed
+.env
+.env.*
+*.pat
+.vsce-token
+
+# editor / os
+.vscode-test/
+.DS_Store
+Thumbs.db
