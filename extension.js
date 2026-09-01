@@ -21,6 +21,10 @@ const FILES = {
 
 const ALL = Object.keys(DETECT)
 
+// Manifest directives, loaded whatever the framework: without them every
+// fxmanifest.lua in the workspace lights up with undefined-global warnings.
+const ALWAYS = ['cfx_manifest.lua']
+
 async function detect () {
   const found = []
   for (const id of ALL) {
@@ -42,7 +46,8 @@ const same = (a, b) => a.length === b.length && a.every((v, i) => v === b[i])
 
 async function apply (ctx, announce) {
   const ids = await resolve()
-  const mine = ids.flatMap(id => FILES[id].map(f => path.join(ctx.extensionPath, 'library', f)))
+  const files = [...ALWAYS, ...ids.flatMap(id => FILES[id])]
+  const mine = files.map(f => path.join(ctx.extensionPath, 'library', f))
 
   const lua = vscode.workspace.getConfiguration('Lua')
   const target = vscode.workspace.workspaceFolders?.length

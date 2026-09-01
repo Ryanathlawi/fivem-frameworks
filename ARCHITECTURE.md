@@ -74,6 +74,7 @@
 | `qbx.lua` | الأصناف والدوال العامة لـ Qbox |
 | `qbx_exports.lua` | `exports.qbx_core:*` بصنف `QbxCoreExports` |
 | `esx.lua` | `ESX.*` وأصناف `xPlayer` و `ESXJob` وغيرها |
+| `cfx_manifest.lua` | توجيهات `fxmanifest.lua` — **مكتوب يدويًا**، يُحمَّل دائمًا |
 
 <div dir="rtl" align="right">
 
