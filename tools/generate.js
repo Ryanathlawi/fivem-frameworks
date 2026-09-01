@@ -16,7 +16,6 @@ const FRAMEWORKS = [
   { id: 'qbcore', repo: 'qbcore-fivem/qb-core', branch: 'main', title: 'QBCore' },
   { id: 'qbx', repo: 'Qbox-project/qbx_core', branch: 'main', title: 'Qbox (qbx_core)' },
   { id: 'esx', repo: 'esx-framework/esx_core', branch: 'main', title: 'ESX' },
-  { id: 'vrp', repo: 'vRP-framework/vRP', branch: 'master', title: 'vRP' },
 ]
 
 // Directories that hold config/translations/vendored code, never public API.

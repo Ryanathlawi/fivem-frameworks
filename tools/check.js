@@ -12,7 +12,7 @@ const ROOT = path.join(__dirname, '..')
 const LIB = path.join(ROOT, 'library')
 
 // Floors, not exact counts -- upstream adds functions all the time.
-const MIN = { 'qbcore.lua': 100, 'qbx.lua': 100, 'qbx_exports.lua': 50, 'esx.lua': 300, 'vrp.lua': 300 }
+const MIN = { 'qbcore.lua': 100, 'qbx.lua': 100, 'qbx_exports.lua': 50, 'esx.lua': 300 }
 
 for (const [file, min] of Object.entries(MIN)) {
   const full = path.join(LIB, file)

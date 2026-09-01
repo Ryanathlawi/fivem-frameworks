@@ -11,14 +11,12 @@ const DETECT = {
   qbcore: '**/qb-core/fxmanifest.lua',
   qbx: '**/qbx_core/fxmanifest.lua',
   esx: '**/es_extended/fxmanifest.lua',
-  vrp: '**/vrp/fxmanifest.lua',
 }
 
 const FILES = {
   qbcore: ['qbcore.lua'],
   qbx: ['qbx.lua', 'qbx_exports.lua'],
   esx: ['esx.lua'],
-  vrp: ['vrp.lua'],
 }
 
 const ALL = Object.keys(DETECT)

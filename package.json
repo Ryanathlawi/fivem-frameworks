@@ -1,11 +1,19 @@
 {
   "name": "fivem-frameworks",
   "displayName": "FiveM Frameworks IntelliSense",
-  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox (qbx_core), ESX and vRP.",
+  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox (qbx_core) and ESX.",
   "version": "0.1.0",
-  "publisher": "athlawi",
+  "publisher": "Ryanathlawi",
+  "author": {
+    "name": "Rayan Athlawi",
+    "url": "https://github.com/Ryanathlawi"
+  },
   "license": "MIT",
   "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#4C1D95",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -21,7 +29,6 @@
     "qbcore",
     "qbox",
     "esx",
-    "vrp",
     "lua",
     "gta5",
     "roleplay"
@@ -49,18 +56,16 @@
               "auto",
               "qbcore",
               "qbx",
-              "esx",
-              "vrp"
+              "esx"
             ],
             "enumDescriptions": [
               "Detect from the resources in this workspace",
               "QBCore (qb-core)",
               "Qbox (qbx_core)",
-              "ESX (es_extended)",
-              "vRP"
+              "ESX (es_extended)"
             ]
           },
-          "markdownDescription": "Which framework definitions to load. `auto` looks for `qb-core`, `qbx_core`, `es_extended` and `vrp` in the workspace, and falls back to loading all of them."
+          "markdownDescription": "Which framework definitions to load. `auto` looks for `qb-core`, `qbx_core` and `es_extended` in the workspace, and falls back to loading all of them."
         }
       }
     },
@@ -91,5 +96,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Ryanathlawi/fivem-frameworks.git"
+  },
+  "homepage": "https://github.com/Ryanathlawi/fivem-frameworks#readme",
+  "bugs": {
+    "url": "https://github.com/Ryanathlawi/fivem-frameworks/issues"
   }
 }
