@@ -5,8 +5,8 @@
   "version": "0.1.0",
   "publisher": "Ryanathlawi",
   "author": {
-    "name": "Rayan Athlawi",
-    "url": "https://github.com/Ryanathlawi"
+    "name": "Athlawi",
+    "url": "https://athlawi.vercel.app/"
   },
   "license": "MIT",
   "icon": "icon.png",
@@ -113,7 +113,7 @@
     "type": "git",
     "url": "https://github.com/Ryanathlawi/fivem-frameworks.git"
   },
-  "homepage": "https://github.com/Ryanathlawi/fivem-frameworks#readme",
+  "homepage": "https://athlawi.vercel.app/",
   "bugs": {
     "url": "https://github.com/Ryanathlawi/fivem-frameworks/issues"
   }

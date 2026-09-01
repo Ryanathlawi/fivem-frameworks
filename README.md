@@ -271,7 +271,7 @@ VS Code إصدار `1.80` أو أحدث — وبس. الباقي يتركّب م
 
 ## المطوّر
 
-**ريان العذلوي** — مطوّر سكربتات وسيرفرات فايف ام.
+**العذلوي** — مطوّر سكربتات وسيرفرات فايف ام · [athlawi.vercel.app](https://athlawi.vercel.app/)
 
 سويت هذا الإكستنشن لأني أشتغل على أكثر من سيرفر وكل واحد على فريمويرك
 مختلف، وتعبت وأنا أفتح مجلد `qb-core` و `es_extended` كل شوي أدوّر اسم
@@ -281,6 +281,7 @@ VS Code إصدار `1.80` أو أحدث — وبس. الباقي يتركّب م
 
 | | |
 |---|---|
+| **الموقع** | [athlawi.vercel.app](https://athlawi.vercel.app/) |
 | **GitHub** | [Ryanathlawi](https://github.com/Ryanathlawi) |
 | **المستودع** | [fivem-frameworks](https://github.com/Ryanathlawi/fivem-frameworks) |
 | **الإبلاغ عن مشكلة** | [Issues](https://github.com/Ryanathlawi/fivem-frameworks/issues) |
@@ -328,7 +329,8 @@ language server, and FiveM's own natives from
 both install alongside this extension, and the natives one can be removed if
 you would rather not have it.
 
-Built by **Rayan Athlawi** ([Ryanathlawi](https://github.com/Ryanathlawi)), a
-FiveM script and server developer, out of the daily annoyance of digging
-through `qb-core` and `es_extended` to remember a function name. MIT licensed —
+Built by **Athlawi** — [athlawi.vercel.app](https://athlawi.vercel.app/) ·
+[github.com/Ryanathlawi](https://github.com/Ryanathlawi) — a FiveM script and
+server developer, out of the daily annoyance of digging through `qb-core` and
+`es_extended` to remember a function name. MIT licensed —
 [issues and requests welcome](https://github.com/Ryanathlawi/fivem-frameworks/issues).
