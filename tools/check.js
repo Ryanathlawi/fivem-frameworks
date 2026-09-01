@@ -11,8 +11,10 @@ const path = require('node:path')
 const ROOT = path.join(__dirname, '..')
 const LIB = path.join(ROOT, 'library')
 
-// Floors, not exact counts -- upstream adds functions all the time.
-const MIN = { 'qbcore.lua': 100, 'qbx.lua': 100, 'qbx_exports.lua': 50, 'esx.lua': 300 }
+// Floors, not exact counts -- upstream adds functions all the time. These track
+// the PUBLIC surface: functions hanging off a table the framework keeps local
+// are filtered out, so most of Qbox lands in qbx_exports.lua rather than qbx.lua.
+const MIN = { 'qbcore.lua': 100, 'qbx.lua': 35, 'qbx_exports.lua': 50, 'esx.lua': 250 }
 
 for (const [file, min] of Object.entries(MIN)) {
   const full = path.join(LIB, file)

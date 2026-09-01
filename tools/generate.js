@@ -28,6 +28,9 @@ const EXPORT_CALL = /^exports\(\s*["']([\w.]+)["']\s*,\s*([A-Za-z_]\w*)\s*\)/
 const CLASS_START = /^---@(class|alias|enum)\s/
 const SIDE_TAG = /^---\s*@?(server|client)\s*$/i
 
+// Lua's own globals: extend them, never redeclare them.
+const LUA_STDLIB = new Set(['string', 'math', 'table', 'os', 'io', 'package', 'coroutine', 'debug', 'utf8', '_G', 'arg'])
+
 function download (fw, dir) {
   const src = path.join(dir, fw.id)
   const url = 'https://codeload.github.com/' + fw.repo + '/tar.gz/refs/heads/' + fw.branch
@@ -77,6 +80,24 @@ function harvest (srcDir) {
     const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
     const side = sideOf(file)
 
+    // `function Player:AddMoney()` on a `local Player = {}` is not a global API.
+    // Emitting it as one leaks the framework's private tables -- and names like
+    // `self`, `math` and `string` would shadow Lua's own standard library.
+    const locals = new Set()
+    for (const l of lines) {
+      const t = l.trim()
+      const m = t.match(/^local\s+(?!function\b)([A-Za-z_][\w,\s]*)/)
+      if (m) for (const n of m[1].split(',')) locals.add(n.trim())
+      // ...unless the file hands it back to the global environment. Qbox does
+      // exactly this (`local qbx = {}` ... `_ENV.qbx = qbx`), so `qbx` is public
+      // while QBCore's `local Player = {}`, never re-exposed, is not.
+      // Deliberately not `return x`: `return self` at the end of a constructor
+      // is idiomatic Lua and says nothing about the module's public surface.
+      const e = t.match(/^(?:_ENV|_G)\.([A-Za-z_]\w*)\s*=/)
+      if (e) locals.delete(e[1])
+    }
+    locals.delete('')
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim()
 
@@ -114,7 +135,8 @@ function harvest (srcDir) {
       const doc = docAbove(lines, i)
       const prev = funcs.get(full)
       if (prev && prev.doc.length >= doc.length) continue
-      funcs.set(full, { prefix, sep, name, args: cleanArgs(args), doc, side })
+      const localScope = locals.has(prefix.split(/[.:]/)[0])
+      funcs.set(full, { prefix, sep, name, args: cleanArgs(args), doc, side, localScope })
     }
   }
   return { classes, funcs, globals, exports: exported }
@@ -135,7 +157,9 @@ function renderFn (d) {
 }
 
 function render (fw, h, extra) {
-  const names = [...h.funcs.keys()]
+  // Locally-scoped tables stay out of the output; the ones that matter are
+  // re-exposed under a proper class (see qbPlayerAlias) or via an @class block.
+  const names = [...h.funcs.keys()].filter(n => !h.funcs.get(n).localScope)
   const banner = [
     '---@meta',
     '-- ' + fw.title + ' definitions, generated from https://github.com/' + fw.repo + ' (' + fw.branch + ').',
@@ -149,6 +173,10 @@ function render (fw, h, extra) {
   }
   const decls = []
   for (const t of tables) {
+    // Frameworks add helpers to `string`, `math` and friends. Declaring those
+    // tables here would REPLACE Lua's own, hiding string.format and the rest --
+    // emitting only the added functions lets the language server merge them in.
+    if (LUA_STDLIB.has(t)) continue
     // Plain assignment, not `t or {}`: the union with `table` would make the type
     // open and silence undefined-field on typo'd calls.
     if (!t.includes('.') && !h.classes.some(b => b[0].startsWith('---@class ' + t))) decls.push('---@class ' + t)

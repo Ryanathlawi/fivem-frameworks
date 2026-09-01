@@ -5,9 +5,6 @@
 ---@class Locale
 Locale = {}
 
----@class Player
-Player = {}
-
 ---@class QBCore
 QBCore = {}
 
@@ -67,75 +64,6 @@ function Locale:replace(phrases) end
 --- @param subs table<string, any> | nil
 --- @return string
 function Locale:t(key, subs) end
-
----[server]
-function Player.new(PlayerData, Offline) end
-
----[server]
-function Player:AddField(fieldName, data) end
-
----[server]
-function Player:AddMethod(methodName, handler) end
-
----[server]
-function Player:AddMoney(moneytype, amount, reason) end
-
----[server]
-function Player:AddRep(rep, amount) end
-
----[server]
-function Player:GetMetaData(meta) end
-
----[server]
-function Player:GetMoney(moneytype) end
-
----[server]
-function Player:GetName() end
-
----[server]
-function Player:GetPlayerData() end
-
----[server]
-function Player:GetRep(rep) end
-
----[server]
-function Player:HasItem(items, amount) end
-
----[server]
-function Player:Logout() end
-
----[server]
-function Player:Notify(text, notifyType, length) end
-
----[server]
-function Player:RemoveMoney(moneytype, amount, reason) end
-
----[server]
-function Player:RemoveRep(rep, amount) end
-
----[server]
-function Player:Save() end
-
----[server]
-function Player:SetGang(gang, grade) end
-
----[server]
-function Player:SetJob(job, grade) end
-
----[server]
-function Player:SetJobDuty(onDuty) end
-
----[server]
-function Player:SetMetaData(meta, val) end
-
----[server]
-function Player:SetMoney(moneytype, amount, reason) end
-
----[server]
-function Player:SetPlayerData(key, val) end
-
----[server]
-function Player:UpdateClient(key, val) end
 
 ---[server]
 function QBCore.Commands.Add(name, help, arguments, argsrequired, callback, permission, ...) end
