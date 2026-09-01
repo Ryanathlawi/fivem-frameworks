@@ -88,7 +88,8 @@ const doc = (file, text) => ({ uri: { fsPath: file }, getText: () => text, posit
 
 const flagged = scan(doc(cl, 'ESX.GetPlayerFromId(1)\nlib.notify({})\n'), MAP, matcher)
 assert.strictEqual(flagged.length, 1, 'exactly the server call is flagged in a client file')
-assert.match(flagged[0].message, /runs on the server.*runs on the client/s)
+assert.match(flagged[0].message, /تشتغل على السيرفر.*ملف كلاينت/s, 'Arabic line')
+assert.match(flagged[0].message, /runs on the server.*runs on the client/s, 'English line')
 
 assert.strictEqual(scan(doc(sv, 'ESX.GetPlayerFromId(1)'), MAP, matcher).length, 0,
   'the same call is correct in a server file')

@@ -156,8 +156,11 @@ lib.notify({ title = 'مرحبا' })        -- ✅ كلاينت، تمام
 
 local xPlayer = ESX.GetPlayerFromId(1)
 --              ~~~~~~~~~~~~~~~~~~~~
+--  ESX.GetPlayerFromId تشتغل على السيرفر، وهذا ملف كلاينت
+--  — ناديها بحدث أو كولباك بدل ما تناديها مباشرة.
+--
 --  ESX.GetPlayerFromId runs on the server, but this file runs on the client.
---  Reach it with an event or a callback instead of calling it directly.
+--  Reach it with an event or a callback instead.
 ```
 
 <div dir="rtl" align="right">
