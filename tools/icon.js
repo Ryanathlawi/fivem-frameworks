@@ -7,7 +7,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const zlib = require('node:zlib')
 
-const S = 256
+const S = Number(process.argv[2]) || 256
 const px = Buffer.alloc(S * S * 4)
 
 // Squared distance to a rounded rectangle, so edges can be antialiased by coverage.
@@ -71,7 +71,7 @@ ihdr.writeUInt32BE(S, 4)
 ihdr[8] = 8 // bit depth
 ihdr[9] = 6 // colour type: RGBA
 
-const out = path.join(__dirname, '..', 'icon.png')
+const out = process.argv[3] || path.join(__dirname, '..', 'icon.png')
 fs.writeFileSync(out, Buffer.concat([
   Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
   chunk('IHDR', ihdr),

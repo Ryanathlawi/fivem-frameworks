@@ -5,7 +5,7 @@ tools/**
 *.vsix
 
 # Arabic project docs live in the repo, not in the published package.
-CLAUDE.md
+CONTRIBUTING.md
 GOAL.md
 PLAN.md
 STATE.md

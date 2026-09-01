@@ -345,6 +345,10 @@ VS Code إصدار `1.80` أو أحدث — وبس. الباقي يتركّب م
 
 لقيت خطأ في التعريفات؟ أو تبي فريمويرك ثاني يتدعّم؟ افتح Issue وأشوفها.
 
+## شكر
+
+**FL1n7** — عضو شرف.
+
 </div>
 
 ---
@@ -388,3 +392,5 @@ Built by **Athlawi** — [athlawi.vercel.app](https://athlawi.vercel.app/) ·
 server developer, out of the daily annoyance of digging through `qb-core` and
 `es_extended` to remember a function name. MIT licensed —
 [issues and requests welcome](https://github.com/Ryanathlawi/fivem-frameworks/issues).
+
+Honorary mention: **FL1n7**.
