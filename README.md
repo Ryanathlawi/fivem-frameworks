@@ -200,8 +200,18 @@ node tools/check.js
 
 ## المتطلبات
 
-- VS Code إصدار `1.80` أو أحدث
-- إكستنشن [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) حق `sumneko` — يتركّب تلقائيًا معه
+VS Code إصدار `1.80` أو أحدث — وبس. الباقي يتركّب معه تلقائيًا:
+
+</div>
+
+| يتركّب معه | ليش |
+|---|---|
+| [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) — `sumneko` | محرّك الإكمال والتنسيق. **إجباري**، بدونه ما فيه شي |
+| [cfxlua-vscode](https://marketplace.visualstudio.com/items?itemName=overextended.cfxlua-vscode) | دوال فايف ام الأصلية (natives) مثل `GetEntityCoords`. تقدر تشيله لو ما تبيه |
+
+<div dir="rtl" align="right">
+
+يعني تركيب واحد يعطيك: **الفريمويركات + الـ natives + التنسيق**.
 
 ## ملاحظات
 
@@ -256,9 +266,13 @@ rather than written by hand, so a framework update is one command away
 (`node tools/generate.js`). Open any folder containing an `fxmanifest.lua`
 and the matching framework is detected and loaded automatically.
 
-Completion and formatting are powered by the
+One install covers frameworks, natives and formatting. Completion and
+formatting come from the
 [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua)
-language server, which installs alongside this extension.
+language server, and FiveM's own natives from
+[cfxlua-vscode](https://marketplace.visualstudio.com/items?itemName=overextended.cfxlua-vscode);
+both install alongside this extension, and the natives one can be removed if
+you would rather not have it.
 
 Built by **Rayan Athlawi** ([Ryanathlawi](https://github.com/Ryanathlawi)), a
 FiveM script and server developer, out of the daily annoyance of digging

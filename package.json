@@ -1,7 +1,7 @@
 {
   "name": "fivem-frameworks",
   "displayName": "FiveM Frameworks IntelliSense",
-  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox (qbx_core) and ESX.",
+  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox (qbx_core) and ESX. Ships with FiveM natives.",
   "version": "0.1.0",
   "publisher": "Ryanathlawi",
   "author": {
@@ -35,6 +35,9 @@
   ],
   "extensionDependencies": [
     "sumneko.lua"
+  ],
+  "extensionPack": [
+    "overextended.cfxlua-vscode"
   ],
   "main": "./extension.js",
   "activationEvents": [

@@ -58,9 +58,16 @@ local Player = SomeCustomGetter(source)
 
 ### يجيني تحذير `undefined-global` على دوال فايف ام الأصلية
 
-هذا الإكستنشن يغطّي الفريمويركات فقط، لا الـ natives. ركّب معه
-[`cfxlua-vscode`](https://marketplace.visualstudio.com/items?itemName=overextended.cfxlua-vscode)
-وتُغطّى.
+الـ natives تأتي من `cfxlua-vscode` وهو يُركَّب تلقائيًا مع هذا الإكستنشن.
+لو ظهر التحذير فالأرجح أنك أزلته — أعد تركيبه:
+
+</div>
+
+```bash
+code --install-extension overextended.cfxlua-vscode
+```
+
+<div dir="rtl" align="right">
 
 ### التنسيق ما يشتغل مع `Shift+Alt+F`
 
