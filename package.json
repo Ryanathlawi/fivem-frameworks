@@ -1,0 +1,95 @@
+{
+  "name": "fivem-frameworks",
+  "displayName": "FiveM Frameworks IntelliSense",
+  "description": "Autocomplete, hover docs and formatting for QBCore, Qbox (qbx_core), ESX and vRP.",
+  "version": "0.1.0",
+  "publisher": "athlawi",
+  "license": "MIT",
+  "icon": "icon.png",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Formatters"
+  ],
+  "keywords": [
+    "fivem",
+    "fxserver",
+    "cfx",
+    "qbcore",
+    "qbox",
+    "esx",
+    "vrp",
+    "lua",
+    "gta5",
+    "roleplay"
+  ],
+  "extensionDependencies": [
+    "sumneko.lua"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "workspaceContains:**/fxmanifest.lua",
+    "workspaceContains:**/__resource.lua"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "FiveM Frameworks",
+      "properties": {
+        "fivemFrameworks.frameworks": {
+          "type": "array",
+          "default": [
+            "auto"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "qbcore",
+              "qbx",
+              "esx",
+              "vrp"
+            ],
+            "enumDescriptions": [
+              "Detect from the resources in this workspace",
+              "QBCore (qb-core)",
+              "Qbox (qbx_core)",
+              "ESX (es_extended)",
+              "vRP"
+            ]
+          },
+          "markdownDescription": "Which framework definitions to load. `auto` looks for `qb-core`, `qbx_core`, `es_extended` and `vrp` in the workspace, and falls back to loading all of them."
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[lua]": {
+        "editor.defaultFormatter": "sumneko.lua",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+      }
+    },
+    "commands": [
+      {
+        "command": "fivemFrameworks.reload",
+        "title": "FiveM: Reload framework definitions",
+        "category": "FiveM"
+      }
+    ]
+  },
+  "scripts": {
+    "generate": "node tools/generate.js",
+    "test": "node tools/check.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ryanathlawi/fivem-frameworks.git"
+  }
+}

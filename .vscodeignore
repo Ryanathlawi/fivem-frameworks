@@ -1,0 +1,18 @@
+.git/**
+.gitignore
+node_modules/**
+tools/**
+*.vsix
+
+# Arabic project docs live in the repo, not in the published package.
+CLAUDE.md
+GOAL.md
+PLAN.md
+STATE.md
+LOGS.md
+DECISIONS.md
+TROUBLESHOOTING.md
+GLOSSARY.md
+QUESTIONS.md
+ARCHITECTURE.md
+CLIENT_INTERVIEW.md
